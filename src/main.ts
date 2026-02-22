@@ -1,4 +1,4 @@
-import { IUpdateInfo, updateElectronApp } from "update-electron-app";
+import { updateElectronApp } from "update-electron-app";
 
 import { BrowserWindow, Notification, app, shell } from "electron";
 import started from "electron-squirrel-startup";
@@ -6,6 +6,7 @@ import started from "electron-squirrel-startup";
 import { autoLaunch } from "./native/autoLaunch";
 import { config } from "./native/config";
 import { initDiscordRpc } from "./native/discordRpc";
+import { initPtt } from "./native/ptt";
 import { initTray } from "./native/tray";
 import { BUILD_URL, createMainWindow, mainWindow } from "./native/window";
 
@@ -24,7 +25,7 @@ if (!config.hardwareAcceleration) {
 // ensure only one copy of the application can run
 const acquiredLock = app.requestSingleInstanceLock();
 
-const onNotifyUser = (_info: IUpdateInfo) => {
+const onNotifyUser = () => {
   const notification = new Notification({
     title: "Update Available",
     body: "Restart the app to install the update.",
@@ -53,6 +54,7 @@ if (acquiredLock) {
 
     initTray();
     initDiscordRpc();
+    initPtt();
 
     // Windows specific fix for notifications
     if (process.platform === "win32") {
